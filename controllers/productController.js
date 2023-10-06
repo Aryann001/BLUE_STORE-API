@@ -109,7 +109,7 @@ export const deleteProduct = catchAsyncErrors(async (req, res, next) => {
 
 //FILTER PRODUCTS
 export const filteredProducts = catchAsyncErrors(async (req, res, next) => {
-  const resultPerPage = 8;
+  const resultPerPage = 10;
   const productCount = await Product.countDocuments();
 
   const features = new Features(Product.find(), req.query).search().filter();
@@ -133,7 +133,7 @@ export const filteredProducts = catchAsyncErrors(async (req, res, next) => {
 
 //FEATURED PRODUCTS
 export const featuredProducts = catchAsyncErrors(async (req, res, next) => {
-  const resultPerPage = ;
+  const resultPerPage = 10;
   const productCount = await Product.countDocuments();
 
   const features = new Features(

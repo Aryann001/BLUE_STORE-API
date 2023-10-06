@@ -133,7 +133,7 @@ export const filteredProducts = catchAsyncErrors(async (req, res, next) => {
 
 //FEATURED PRODUCTS
 export const featuredProducts = catchAsyncErrors(async (req, res, next) => {
-  const resultPerPage = 8;
+  const resultPerPage = ;
   const productCount = await Product.countDocuments();
 
   const features = new Features(

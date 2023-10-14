@@ -10,7 +10,9 @@ import crypto from "crypto";
 //REGISTER USER
 export const register = catchAsyncErrors(async (req, res, next) => {
   const result = await cloudinary.v2.uploader.upload(req.body.avatar, {
-    folder: "Profile Pics",
+    folder: "Profile_Pics",
+    width: 150,
+    crop: "scale",
   });
 
   const { name, email, password } = req.body;

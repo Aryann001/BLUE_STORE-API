@@ -15,6 +15,7 @@ export const register = catchAsyncErrors(async (req, res, next) => {
   if(req.body.avatar !== null){
     const result = await cloudinary.v2.uploader.upload(req.body.avatar, {
       folder: "Profile_Pics",
+      resource_type: "auto",
       width: 150,
       crop: "scale",
     });

@@ -29,12 +29,12 @@ const userSchema = new mongoose.Schema({
   avatar: {
     public_id: {
       type: String,
-      default: "Profile_Pic",
+      required: true,
     },
 
     url: {
       type: String,
-      default: "/Profile.png",
+      required: true,
     },
   },
 

@@ -12,7 +12,7 @@ export const register = catchAsyncErrors(async (req, res, next) => {
   
   let avatar = { public_id: "Profile_Pic", url: "/Profile.png" };
 
-  if(req.body.avatar){
+  if(req.body.avatar !== ""){
     const result = await cloudinary.v2.uploader.upload(req.body.avatar, {
       folder: "Profile_Pics",
       width: 150,

@@ -12,8 +12,8 @@ export const register = catchAsyncErrors(async (req, res, next) => {
   
   let avatar = { public_id: "Profile_Pic", url: "/Profile.png" };
 
-  if(req.body.avatar !== undefined){
-    const result = await cloudinary.v2.uploader.upload(req.body.avatar, {
+  if(req.files.avatar !== undefined){
+    const result = await cloudinary.v2.uploader.upload(req.files.avatar.tempFilePath, {
       folder: "Profile_Pics",
       resource_type: "auto",
       width: 150,

@@ -22,7 +22,7 @@ export const register = catchAsyncErrors(async (req, res, next) => {
 
     avatar = { public_id: result.public_id, url: result.secure_url }
   }
-   res.status(200).json({ avatarError: req.body.avatar })
+  
   const { name, email, password } = req.body;
 
   const user = await User.create({

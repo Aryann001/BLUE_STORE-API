@@ -9,11 +9,18 @@ import crypto from "crypto";
 
 //REGISTER USER
 export const register = catchAsyncErrors(async (req, res, next) => {
-  const result = await cloudinary.v2.uploader.upload(req.body.avatar, {
-    folder: "Profile_Pics",
-    width: 150,
-    crop: "scale",
-  });
+  
+  let avatar = { public_id: "Profile_Pic", url: "/Profile.png" };
+
+  if(req.body.avatar){
+    const result = await cloudinary.v2.uploader.upload(req.body.avatar, {
+      folder: "Profile_Pics",
+      width: 150,
+      crop: "scale",
+    });
+
+    avatar = { public_id: result.public_id, url: result.secure_url }
+  }
 
   const { name, email, password } = req.body;
 
@@ -21,7 +28,7 @@ export const register = catchAsyncErrors(async (req, res, next) => {
     name,
     email,
     password,
-    avatar: { public_id: result.public_id, url: result.secure_url },
+    avatar,
   });
 
   sendCookie(user, 201, res);

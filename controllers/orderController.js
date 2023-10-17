@@ -17,11 +17,7 @@ export const newOrder = catchAsyncErrors(async (req, res, next) => {
 
   if (paymentInfo.status === "succeeded") {
     const orderStatus = "Order Confirmed"
-
-     order.orderItems.forEach(async (o) => {
-      await updateStock(o.product, o.quantity);
-    });
-
+    
     req.body.status = orderStatus
   }
 
@@ -37,6 +33,12 @@ export const newOrder = catchAsyncErrors(async (req, res, next) => {
     paidAt: Date.now(),
     user: req.user._id,
   });
+
+  if (paymentInfo.status === "succeeded") {
+    order.orderItems.forEach(async (o) => {
+      await updateStock(o.product, o.quantity);
+    });
+  }
 
   res.status(201).json({
     success: true,

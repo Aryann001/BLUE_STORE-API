@@ -18,6 +18,10 @@ export const newOrder = catchAsyncErrors(async (req, res, next) => {
   if (paymentInfo.status === "succeeded") {
     const orderStatus = "Order Confirmed"
 
+     order.orderItems.forEach(async (o) => {
+      await updateStock(o.product, o.quantity);
+    });
+
     req.body.status = orderStatus
   }
 
@@ -96,11 +100,11 @@ export const updateOrder = catchAsyncErrors(async (req, res, next) => {
     return next(new ErrorHandler("You have already delivered this order", 400));
   }
 
-  if(req.body.status === "Shipped") {
-    order.orderItems.forEach(async (o) => {
-      await updateStock(o.product, o.quantity);
-    });
-  }
+  // if(req.body.status === "Shipped") {
+  //   order.orderItems.forEach(async (o) => {
+  //     await updateStock(o.product, o.quantity);
+  //   });
+  // }
 
   order.orderStatus = req.body.status;
 

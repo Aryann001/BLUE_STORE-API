@@ -74,7 +74,7 @@ export const updateBanner = catchAsyncErrors(async (req, res, next) => {
     req.body.images = imagesLink;
   }
 
-  updateBanner = await Banner.findByIdAndUpdate(bannerId, req.body.images, {
+  updateBanner = await Banner.findByIdAndUpdate(bannerId, req.body, {
     new: true,
     runValidators: true,
     useFindAndModify: false,

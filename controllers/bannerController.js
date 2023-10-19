@@ -43,6 +43,7 @@ export const updateBanner = catchAsyncErrors(async (req, res, next) => {
   }
 
   let images = [];
+  let bannerId =  banner._id
 
   if (typeof req.body.images === "string") {
     images.push(req.body.images);
@@ -71,7 +72,7 @@ export const updateBanner = catchAsyncErrors(async (req, res, next) => {
     req.body.images = imagesLink;
   }
 
-  banner = await Banner.updateOne({ images }, req.body.images, {
+  banner = await Banner.findByIdAndUpdate(bannerId, req.body.images, {
     new: true,
     runValidators: true,
     useFindAndModify: false,

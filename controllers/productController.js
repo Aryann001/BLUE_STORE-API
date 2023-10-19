@@ -49,6 +49,7 @@ export const updateProduct = catchAsyncErrors(async (req, res, next) => {
   }
 
   let images = [];
+  let productDetail = JSON.parse(req.body.productDetails);
 
   if (typeof req.body.images === "string") {
     images.push(req.body.images);
@@ -76,6 +77,8 @@ export const updateProduct = catchAsyncErrors(async (req, res, next) => {
 
     req.body.images = imagesLink;
   }
+
+  req.body.productDetails = productDetail;
 
   product = await Product.findByIdAndUpdate(req.params.id, req.body, {
     new: true,

@@ -36,7 +36,7 @@ export const createBanner = catchAsyncErrors(async (req, res, next) => {
 });
 
 export const updateBanner = catchAsyncErrors(async (req, res, next) => {
-  let banner = await Banner.findOne({ images });
+  let banner = await Banner.find()[0];
 
   if (!banner) {
     return next(new ErrorHandler(`No Images in Banner`), 400);
@@ -84,7 +84,7 @@ export const updateBanner = catchAsyncErrors(async (req, res, next) => {
 });
 
 export const deleteBanner = catchAsyncErrors(async (req, res, next) => {
-  let banner = await Banner.findOne({ images });
+  let banner = await Banner.find()[0];
 
   if (!banner) {
     return next(new ErrorHandler(`No Images in Banner`), 400);

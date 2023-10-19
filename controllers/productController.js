@@ -15,6 +15,7 @@ export const createProduct = catchAsyncErrors(async (req, res, next) => {
   }
 
   let imagesLink = [];
+  let productDetail = JSON.parse(req.body.productDetails);
 
   for (let i = 0; i < images.length; i++) {
     const result = await cloudinary.v2.uploader.upload(images[i], {
@@ -29,6 +30,7 @@ export const createProduct = catchAsyncErrors(async (req, res, next) => {
 
   req.body.images = imagesLink;
   req.body.user = req.user.id;
+  req.body.productDetails = productDetail;
 
   const product = await Product.create(req.body);
 

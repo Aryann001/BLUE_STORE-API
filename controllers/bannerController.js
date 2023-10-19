@@ -36,14 +36,16 @@ export const createBanner = catchAsyncErrors(async (req, res, next) => {
 });
 
 export const updateBanner = catchAsyncErrors(async (req, res, next) => {
-  let banner = await Banner.find();
+  const banner = await Banner.find();
 
   if (!banner[0]) {
     return next(new ErrorHandler(`No Images in Banner`), 400);
   }
 
-  let images = [];
   let bannerId =  banner[0]._id
+
+  let updateBanner = await Banner.findById(bannerId)
+  let images = [];
 
   if (typeof req.body.images === "string") {
     images.push(req.body.images);
@@ -52,8 +54,8 @@ export const updateBanner = catchAsyncErrors(async (req, res, next) => {
   }
 
   if (images !== undefined) {
-    for (let i = 0; i < banner[0].images.length; i++) {
-      await cloudinary.v2.uploader.destroy(banner[0].images[i].public_id);
+    for (let i = 0; i < updateBanner.images.length; i++) {
+      await cloudinary.v2.uploader.destroy(updateBanner.images[i].public_id);
     }
 
     let imagesLink = [];
@@ -72,7 +74,7 @@ export const updateBanner = catchAsyncErrors(async (req, res, next) => {
     req.body.images = imagesLink;
   }
 
-  banner = await Banner.findByIdAndUpdate(bannerId, req.body.images, {
+  updateBanner = await Banner.findByIdAndUpdate(bannerId, req.body.images, {
     new: true,
     runValidators: true,
     useFindAndModify: false,
@@ -80,7 +82,7 @@ export const updateBanner = catchAsyncErrors(async (req, res, next) => {
 
   res.status(200).json({
     success: true,
-    banner,
+    updateBanner,
   });
 });
 

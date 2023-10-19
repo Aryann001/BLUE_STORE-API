@@ -103,10 +103,10 @@ export const deleteBanner = catchAsyncErrors(async (req, res, next) => {
 });
 
 export const getBanner = catchAsyncErrors(async (req, res, next) => {
-  const banner = await Banner.findOne({ images });
+  const banner = await Banner.find();
 
   res.status(200).json({
     success: true,
-    banner,
+    banner: banner[0],
   });
 });

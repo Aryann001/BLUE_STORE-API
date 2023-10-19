@@ -36,14 +36,14 @@ export const createBanner = catchAsyncErrors(async (req, res, next) => {
 });
 
 export const updateBanner = catchAsyncErrors(async (req, res, next) => {
-  let banner = await Banner.find()[0];
+  let banner = await Banner.find();
 
-  if (!banner) {
+  if (!banner[0]) {
     return next(new ErrorHandler(`No Images in Banner`), 400);
   }
 
   let images = [];
-  let bannerId =  banner._id
+  let bannerId =  banner[0]._id
 
   if (typeof req.body.images === "string") {
     images.push(req.body.images);
@@ -52,8 +52,8 @@ export const updateBanner = catchAsyncErrors(async (req, res, next) => {
   }
 
   if (images !== undefined) {
-    for (let i = 0; i < banner.images.length; i++) {
-      await cloudinary.v2.uploader.destroy(banner.images[i].public_id);
+    for (let i = 0; i < banner[0].images.length; i++) {
+      await cloudinary.v2.uploader.destroy(banner[0].images[i].public_id);
     }
 
     let imagesLink = [];
@@ -85,17 +85,17 @@ export const updateBanner = catchAsyncErrors(async (req, res, next) => {
 });
 
 export const deleteBanner = catchAsyncErrors(async (req, res, next) => {
-  let banner = await Banner.find()[0];
+  let banner = await Banner.find();
 
-  if (!banner) {
+  if (!banner[0]) {
     return next(new ErrorHandler(`No Images in Banner`), 400);
   }
 
-  for (let i = 0; i < banner.images.length; i++) {
-    await cloudinary.v2.uploader.destroy(banner.images[i].public_id);
+  for (let i = 0; i < banner[0].images.length; i++) {
+    await cloudinary.v2.uploader.destroy(banner[0].images[i].public_id);
   }
 
-  await banner.deleteOne();
+  await banner[0].deleteOne();
 
   res.status(200).json({
     success: true,

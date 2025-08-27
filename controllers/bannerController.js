@@ -36,12 +36,15 @@ export const createBanner = catchAsyncErrors(async (req, res, next) => {
 });
 
 export const updateBanner = catchAsyncErrors(async (req, res, next) => {
-  let banner = await Banner.findOne({ images });
+  const banner = await Banner.find();
 
-  if (!banner) {
+  if (!banner[0]) {
     return next(new ErrorHandler(`No Images in Banner`), 400);
   }
 
+  let bannerId =  banner[0]._id
+
+  let updateBanner = await Banner.findById(bannerId)
   let images = [];
 
   if (typeof req.body.images === "string") {
@@ -51,8 +54,8 @@ export const updateBanner = catchAsyncErrors(async (req, res, next) => {
   }
 
   if (images !== undefined) {
-    for (let i = 0; i < banner.images.length; i++) {
-      await cloudinary.v2.uploader.destroy(banner.images[i].public_id);
+    for (let i = 0; i < updateBanner.images.length; i++) {
+      await cloudinary.v2.uploader.destroy(updateBanner.images[i].public_id);
     }
 
     let imagesLink = [];
@@ -71,7 +74,7 @@ export const updateBanner = catchAsyncErrors(async (req, res, next) => {
     req.body.images = imagesLink;
   }
 
-  banner = await Banner.updateOne({ images }, req.body.images, {
+  updateBanner = await Banner.findByIdAndUpdate(bannerId, req.body, {
     new: true,
     runValidators: true,
     useFindAndModify: false,
@@ -79,22 +82,22 @@ export const updateBanner = catchAsyncErrors(async (req, res, next) => {
 
   res.status(200).json({
     success: true,
-    banner,
+    updateBanner,
   });
 });
 
 export const deleteBanner = catchAsyncErrors(async (req, res, next) => {
-  let banner = await Banner.findOne({ images });
+  let banner = await Banner.find();
 
-  if (!banner) {
+  if (!banner[0]) {
     return next(new ErrorHandler(`No Images in Banner`), 400);
   }
 
-  for (let i = 0; i < banner.images.length; i++) {
-    await cloudinary.v2.uploader.destroy(banner.images[i].public_id);
+  for (let i = 0; i < banner[0].images.length; i++) {
+    await cloudinary.v2.uploader.destroy(banner[0].images[i].public_id);
   }
 
-  await banner.deleteOne();
+  await banner[0].deleteOne();
 
   res.status(200).json({
     success: true,
@@ -103,10 +106,10 @@ export const deleteBanner = catchAsyncErrors(async (req, res, next) => {
 });
 
 export const getBanner = catchAsyncErrors(async (req, res, next) => {
-  const banner = await Banner.findOne({ images });
+  const banner = await Banner.find();
 
   res.status(200).json({
     success: true,
-    banner,
+    banner: banner[0],
   });
 });

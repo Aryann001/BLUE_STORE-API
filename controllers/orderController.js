@@ -17,7 +17,7 @@ export const newOrder = catchAsyncErrors(async (req, res, next) => {
 
   if (paymentInfo.status === "succeeded") {
     const orderStatus = "Order Confirmed"
-
+    
     req.body.status = orderStatus
   }
 
@@ -33,6 +33,12 @@ export const newOrder = catchAsyncErrors(async (req, res, next) => {
     paidAt: Date.now(),
     user: req.user._id,
   });
+
+  if (paymentInfo.status === "succeeded") {
+    order.orderItems.forEach(async (o) => {
+      await updateStock(o.product, o.quantity);
+    });
+  }
 
   res.status(201).json({
     success: true,
@@ -96,12 +102,6 @@ export const updateOrder = catchAsyncErrors(async (req, res, next) => {
     return next(new ErrorHandler("You have already delivered this order", 400));
   }
 
-  if(req.body.status === "Shipped") {
-    order.orderItems.forEach(async (o) => {
-      await updateStock(o.product, o.quantity);
-    });
-  }
-
   order.orderStatus = req.body.status;
 
   if (req.body.status === "Delivered") {
@@ -118,7 +118,7 @@ export const updateOrder = catchAsyncErrors(async (req, res, next) => {
 async function updateStock(id, quantity) {
   const product = await Product.findById(id);
 
-  product.Stock -= quantity;
+  product.stock -= quantity;
 
   await product.save({ validateBeforeSave: false });
 }

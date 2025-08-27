@@ -15,6 +15,7 @@ export const createProduct = catchAsyncErrors(async (req, res, next) => {
   }
 
   let imagesLink = [];
+  let productDetail = JSON.parse(req.body.productDetails);
 
   for (let i = 0; i < images.length; i++) {
     const result = await cloudinary.v2.uploader.upload(images[i], {
@@ -29,6 +30,7 @@ export const createProduct = catchAsyncErrors(async (req, res, next) => {
 
   req.body.images = imagesLink;
   req.body.user = req.user.id;
+  req.body.productDetails = productDetail;
 
   const product = await Product.create(req.body);
 
@@ -47,6 +49,7 @@ export const updateProduct = catchAsyncErrors(async (req, res, next) => {
   }
 
   let images = [];
+  let productDetail = JSON.parse(req.body.productDetails);
 
   if (typeof req.body.images === "string") {
     images.push(req.body.images);
@@ -74,6 +77,8 @@ export const updateProduct = catchAsyncErrors(async (req, res, next) => {
 
     req.body.images = imagesLink;
   }
+
+  req.body.productDetails = productDetail;
 
   product = await Product.findByIdAndUpdate(req.params.id, req.body, {
     new: true,

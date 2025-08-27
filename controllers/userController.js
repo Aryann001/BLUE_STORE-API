@@ -9,17 +9,27 @@ import crypto from "crypto";
 
 //REGISTER USER
 export const register = catchAsyncErrors(async (req, res, next) => {
-  const result = await cloudinary.v2.uploader.upload(req.body.avatar, {
-    folder: "Profile Pics",
-  });
+  
+  let avatar = { public_id: "Profile_Pic", url: "/Profile.png" };
 
+  if(req.body.avatar !== undefined){
+    const result = await cloudinary.v2.uploader.upload(req.body.avatar, {
+      folder: "Profile_Pics",
+      resource_type: "auto",
+      width: 150,
+      crop: "scale",
+    });
+
+    avatar = { public_id: result.public_id, url: result.secure_url }
+  }
+  
   const { name, email, password } = req.body;
 
   const user = await User.create({
     name,
     email,
     password,
-    avatar: { public_id: result.public_id, url: result.secure_url },
+    avatar,
   });
 
   sendCookie(user, 201, res);
@@ -174,7 +184,7 @@ export const updateProfile = catchAsyncErrors(async (req, res, next) => {
     email: req.body.email,
   };
 
-  if (req.body.avatar !== "") {
+  if (req.body.avatar !== undefined) {
     const user = await User.findById(req.user.id);
 
     const imageId = user.avatar.public_id;
@@ -182,7 +192,10 @@ export const updateProfile = catchAsyncErrors(async (req, res, next) => {
     await cloudinary.v2.uploader.destroy(imageId);
 
     const result = await cloudinary.v2.uploader.upload(req.body.avatar, {
-      folder: "Profile Pics",
+      folder: "Profile_Pics",
+      resource_type: "auto",
+      width: 150,
+      crop: "scale",
     });
 
     newUserData.avatar = {
